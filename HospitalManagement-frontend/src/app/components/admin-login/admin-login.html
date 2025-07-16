@@ -1,0 +1,33 @@
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="card shadow-lg p-4 rounded-4" style="width: 400px;">
+    <div class="text-center">
+      <img src="https://img.freepik.com/free-vector/hospital-building-healthcare-cartoon-vector-icon-illustration_138676-2751.jpg"
+           alt="AmazeCare Logo" class="img-fluid mb-3" width="100">
+      <h3 class="text-primary fw-bold mb-4">AmazeCare Admin Login</h3>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" id="email" class="form-control" formControlName="email" placeholder="admin@example.com" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" formControlName="password" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+    <div class="text-center mt-3">
+  <p class="text-muted">
+    Don’t have an account?
+    <a [routerLink]="['/register-admin']" class="text-decoration-none text-primary fw-semibold">Sign up here</a>
+  </p>
+</div>
+
+    <div class="text-center mt-3">
+      <small class="text-muted">Access restricted to hospital admins only</small>
+    </div>
+  </div>
+</div>

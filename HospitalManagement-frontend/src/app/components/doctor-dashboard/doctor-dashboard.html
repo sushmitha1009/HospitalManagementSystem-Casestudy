@@ -1,0 +1,160 @@
+<div class="container mt-5">
+  <!-- Top Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm rounded mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">👨‍⚕️ Doctor Dashboard</span>
+
+    <div class="d-flex ms-auto align-items-center">
+      <span class="text-white me-3">
+        👋 Welcome, Doctor
+      </span>
+      <button class="btn btn-outline-light btn-sm" (click)="logout()">
+        🚪 Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+  <!-- Search and Filter -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <input type="text" class="form-control" placeholder="🔍 Search by name" [(ngModel)]="searchName" (input)="searchByName()" />
+    </div>
+    <div class="col-md-4">
+      <select class="form-select" [(ngModel)]="specialtyFilter" (change)="filterBySpecialty()">
+        <option value="">🧠 Filter by Specialty</option>
+        <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-outline-danger w-100" (click)="clearFilters()">❌ Clear Filters</button>
+    </div>
+  </div>
+
+  <!-- Doctor Table -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">👨‍🔬 All Doctors</div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover mb-0">
+        <thead class="table-secondary text-center">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Specialty</th>
+            <th>Experience</th>
+            <th>Qualification</th>
+            <th>Designation</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let doc of filteredDoctors | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
+            <td>{{ doc.doctorID }}</td>
+            <td>{{ doc.fullName }}</td>
+            <td>{{ doc.specialty }}</td>
+            <td>{{ doc.experienceYears }} yrs</td>
+            <td>{{ doc.qualification }}</td>
+            <td>{{ doc.designation }}</td>
+            <td>{{ doc.contactNumber }}</td>
+            <td>{{ doc.email }}</td>
+            <td class="text-nowrap">
+              <button class="btn btn-sm btn-outline-info me-1" (click)="editDoctor(doc)">✏️</button>
+              <button class="btn btn-sm btn-outline-danger me-1" (click)="deleteDoctor(doc.doctorID)">🗑️</button>
+              <button class="btn btn-sm btn-outline-primary" (click)="viewAppointments(doc.doctorID)">📋</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls (pageChange)="currentPage = $event" [autoHide]="true" class="p-3 d-flex justify-content-center"></pagination-controls>
+  </div>
+
+  <!-- Edit Doctor Form -->
+  <div *ngIf="editingDoctor" class="card shadow-sm p-4 mb-5">
+    <h5 class="mb-3 text-success">🛠️ Edit Doctor</h5>
+    <form (ngSubmit)="updateDoctor()">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="editingDoctor.fullName" name="fullName" placeholder="Full Name" required />
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" [(ngModel)]="editingDoctor.specialty" name="specialty" required>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <input type="number" class="form-control" [(ngModel)]="editingDoctor.experienceYears" name="experienceYears" placeholder="Experience (Years)" required />
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="editingDoctor.qualification" name="qualification" placeholder="Qualification" required />
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="editingDoctor.designation" name="designation" placeholder="Designation" required />
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="editingDoctor.contactNumber" name="contactNumber" placeholder="Contact Number" required />
+        </div>
+        <div class="col-md-4">
+          <input type="email" class="form-control" [(ngModel)]="editingDoctor.email" name="email" placeholder="Email" required />
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" [(ngModel)]="editingDoctor.passwordHash" name="passwordHash" placeholder="Password" required />
+        </div>
+        <div class="col-md-12 d-flex justify-content-end gap-2">
+          <button class="btn btn-success" type="submit">💾 Update</button>
+          <button class="btn btn-secondary" type="button" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Upload Report Form -->
+  <div class="card shadow-sm p-4 mb-5">
+    <h5 class="mb-3 text-primary">📤 Upload Patient Report</h5>
+    <form (ngSubmit)="uploadReport()">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <input type="number" class="form-control" [(ngModel)]="reportForm.patient.patientId" name="patientId" placeholder="Patient ID" required />
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="reportForm.reportType" name="reportType" placeholder="Report Type" required />
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="reportForm.description" name="description" placeholder="Description" required />
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-primary w-100" type="submit">Upload Report</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Doctor Appointments -->
+  <div class="card shadow-sm p-4" *ngIf="doctorAppointments.length > 0">
+    <h5 class="mb-3 text-info">📆 Doctor Appointments</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Appointment ID</th>
+            <th>Patient ID</th>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appt of doctorAppointments">
+            <td>{{ appt.id }}</td>
+            <td>{{ appt.patientId }}</td>
+            <td>{{ appt.appointmentDate | date:'medium' }}</td>
+            <td>{{ appt.reason }}</td>
+            <td><span class="badge bg-warning text-dark">{{ appt.status }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

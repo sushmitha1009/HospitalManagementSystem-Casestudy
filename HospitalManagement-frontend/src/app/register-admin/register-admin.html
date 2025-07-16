@@ -1,0 +1,24 @@
+<div class="container mt-5">
+  <div class="card mx-auto shadow p-4" style="max-width: 500px;">
+    <h4 class="text-center text-primary mb-4">Admin Registration</h4>
+
+    <form (ngSubmit)="register()">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input [(ngModel)]="admin.name" name="name" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input [(ngModel)]="admin.email" name="email" type="email" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input [(ngModel)]="admin.password" name="password" type="password" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">Register</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="card shadow-lg p-4 rounded-4" style="width: 400px;">
+    <div class="text-center">
+      <img src="https://img.freepik.com/free-vector/healthcare-concept-illustration_114360-2903.jpg" 
+           alt="Patient Icon" class="img-fluid mb-3 rounded-circle" width="100">
+      <h3 class="text-info fw-bold mb-4">Patient Login</h3>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="loginPatient()">
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" placeholder="patient@example.com" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" formControlName="password" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="btn btn-info w-100">Login</button>
+    </form>
+    <div class="text-center mt-3">
+  <p class="text-muted">
+    Don’t have an account?
+    <a [routerLink]="['/register-patient']" class="text-decoration-none text-primary fw-semibold">Sign up here</a>
+  </p>
+</div>
+
+    <div class="text-center mt-3">
+      <small class="text-muted">Login to manage appointments & records</small>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="container mt-5">
+  <div class="card mx-auto shadow p-4" style="max-width: 500px;">
+    <h4 class="text-center text-primary mb-4">Patient Registration</h4>
+
+    <form (ngSubmit)="register()">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input [(ngModel)]="patient.fullName" name="fullName" class="form-control" placeholder="Full Name" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Date of Birth</label>
+        <input [(ngModel)]="patient.dateOfBirth" name="dateOfBirth" type="date" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <select [(ngModel)]="patient.gender" name="gender" class="form-select" required>
+          <option value="" disabled selected>Select Gender</option>
+          <option *ngFor="let g of genderOptions" [value]="g">{{ g }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Contact Number</label>
+        <input [(ngModel)]="patient.contactNumber" name="contactNumber" class="form-control" placeholder="Contact Number" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input [(ngModel)]="patient.email" name="email" type="email" class="form-control" placeholder="Email" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input [(ngModel)]="patient.passwordHash" name="passwordHash" type="password" class="form-control" placeholder="Password" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Medical History</label>
+        <textarea [(ngModel)]="patient.medicalHistory" name="medicalHistory" class="form-control" placeholder="Medical History" rows="3"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Registration Date</label>
+        <input [(ngModel)]="patient.registrationDate" name="registrationDate" type="date" class="form-control" readonly />
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">Register</button>
+    </form>
+  </div>
+</div>

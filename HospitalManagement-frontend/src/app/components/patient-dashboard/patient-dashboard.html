@@ -1,0 +1,178 @@
+<!-- Wrapper to apply *ngIf only once -->
+<div *ngIf="patient; else loading">
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm rounded mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand">🏥 Patient Dashboard</span>
+
+      <div class="d-flex ms-auto align-items-center">
+        <span class="text-white me-3">
+          👋 Welcome, {{ patient.fullName }}
+        </span>
+        <button class="btn btn-outline-light btn-sm" (click)="logout()">
+          🚪 Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+
+    <!-- Profile Section -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-secondary text-white">🧑‍⚕️ Your Profile</div>
+      <div class="card-body">
+        <form (ngSubmit)="updateProfile()">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" [(ngModel)]="patient.fullName" name="fullName" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" [(ngModel)]="patient.dateOfBirth" name="dob" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Gender</label>
+              <select [(ngModel)]="patient.gender" name="gender" class="form-select">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Contact Number</label>
+              <input type="text" [(ngModel)]="patient.contactNumber" name="contactNumber" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" [(ngModel)]="patient.email" name="email" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">New Password</label>
+              <div class="input-group">
+                <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="patient.passwordHash" name="passwordHash" class="form-control" placeholder="Leave blank to keep current password">
+                <button class="btn btn-outline-secondary" type="button" (click)="showPassword = !showPassword">
+                  {{ showPassword ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Registration Date</label>
+              <input type="date" [(ngModel)]="patient.registrationDate" name="registrationDate" class="form-control" readonly>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Medical History</label>
+              <textarea [(ngModel)]="patient.medicalHistory" name="history" rows="3" class="form-control" placeholder="Enter any relevant medical history..."></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-success">💾 Update</button>
+            <button type="button" class="btn btn-danger" (click)="deleteProfile()">🗑️ Delete Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Book Appointment Section -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-info text-white">📅 Book Appointment</div>
+      <div class="card-body">
+        <form (ngSubmit)="bookAppointment()">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Doctor</label>
+              <select [(ngModel)]="newAppointment.doctorID" name="doctorID" class="form-select" required>
+                <option *ngFor="let d of doctors" [value]="d.doctorID">{{ d.fullName }} ({{ d.specialty }})</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Date & Time</label>
+              <input type="datetime-local" [(ngModel)]="newAppointment.appointmentDate" name="date" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Reason</label>
+              <input type="text" [(ngModel)]="newAppointment.reason" name="reason" class="form-control" required>
+            </div>
+          </div>
+          <button class="btn btn-primary mt-3">✅ Confirm Appointment</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Appointment History -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">🕓 Your Appointments</div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush" *ngIf="appointments.length; else noAppointments">
+          <li *ngFor="let appt of appointments" class="list-group-item d-flex justify-content-between align-items-center">
+            <span>
+              <strong>{{ appt.appointmentDate | date:'medium' }}</strong> <br>
+              with Doctor ID {{ appt.doctorID }} — {{ appt.reason }}
+            </span>
+            <span class="badge bg-warning text-dark">{{ appt.status }}</span>
+          </li>
+        </ul>
+        <ng-template #noAppointments>
+          <div class="text-muted">No appointments found.</div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Medical Reports -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-dark text-white">📄 Medical Reports</div>
+      <div class="card-body" *ngIf="reports.length > 0; else noReports">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-secondary">
+              <tr>
+                <th>Date</th>
+                <th>Report Type</th>
+                <th>Description</th>
+                <th>Doctor Name</th>
+                <th>Specialty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let report of reports">
+                <td>{{ report.date | date: 'mediumDate' }}</td>
+                <td>{{ report.reportType }}</td>
+                <td>{{ report.description }}</td>
+                <td>{{ report.doctor?.fullName }}</td>
+                <td>{{ report.doctor?.specialty }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ng-template #noReports>
+        <div class="text-muted">No medical reports available.</div>
+      </ng-template>
+    </div>
+
+    <!-- Patient Search -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-success text-white">🔍 Search Patients</div>
+      <div class="card-body">
+        <input type="text" [(ngModel)]="searchName" (input)="searchPatients()" class="form-control mb-3" placeholder="Search by name">
+        <ul *ngIf="matchedPatients?.length" class="list-group">
+          <li *ngFor="let p of matchedPatients" class="list-group-item">
+            {{ p.fullName }} ({{ p.email }}) — {{ p.contactNumber }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div> <!-- /.container -->
+
+</div> <!-- /.ngIf wrapper -->
+
+<!-- Fallback -->
+<ng-template #loading>
+  <div class="text-center p-5">
+    <h4 class="text-muted">Loading patient data...</h4>
+  </div>
+</ng-template>

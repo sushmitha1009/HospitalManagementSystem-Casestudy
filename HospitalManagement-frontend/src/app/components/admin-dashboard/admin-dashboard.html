@@ -1,0 +1,65 @@
+<!-- Admin Dashboard Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">🏥 Admin Panel</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/register-doctor']">Add Doctor</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/register-patient']">Add Patient</a>
+        </li>
+      </ul>
+      <button class="btn btn-outline-light btn-sm" (click)="logout()">🚪 Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- admin-dashboard.html -->
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary display-6">
+      👨‍💼 Admin Management Dashboard
+    </h2>
+    <p class="text-muted">Manage registered admins below</p>
+  </div>
+
+  <!-- No Admins Message -->
+  <div *ngIf="admins.length === 0" class="alert alert-warning text-center shadow-sm">
+    🚫 No admins found.
+  </div>
+
+  <!-- Admin Table Card -->
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle text-center mb-0">
+          <thead class="table-light">
+            <tr class="text-primary">
+              <th scope="col">🪪 ID</th>
+              <th scope="col">🧑‍💼 Name</th>
+              <th scope="col">📧 Email</th>
+              <th scope="col">⚙️ Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let admin of admins" class="align-middle">
+              <td class="fw-semibold">{{ admin.id }}</td>
+              <td>{{ admin.name }}</td>
+              <td>{{ admin.email }}</td>
+              <td>
+                <button class="btn btn-outline-warning btn-sm me-2" (click)="updateAdmin(admin)">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteAdmin(admin.id)">
+                  🗑️ Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
